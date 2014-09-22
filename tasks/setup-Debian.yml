@@ -5,21 +5,17 @@
     state=installed
   with_items: apache_packages
 
-- name: Configure Apache (Debian).
-  lineinfile: >
+- name: Configure Apache Vhost ports (Debian).
+  replace: >
     dest="{{ apache_server_root }}/ports.conf"
-    regexp="{{ item.regexp }}"
-    line="{{ item.line }}"
-    state=present
-  with_items:
-  - {
-    regexp: "^Listen ",
-    line: "Listen {{ apache_listen_port }}"
-  }
-  - {
-    regexp: "^NameVirtualHost ",
-    line: "NameVirtualHost *:{{ apache_listen_port }}"
-  }
+    regexp="(\nNameVirtualHost [^\n]+)+"
+    replace="{% for item in apache_listen_ports %}\nNameVirtualHost *:{{ item }}{% endfor %}"
+
+- name: Configure Apache listening ports (Debian).
+  replace: >
+    dest="{{ apache_server_root }}/ports.conf"
+    regexp="(\nListen [^\n]+)+"
+    replace="{% for item in apache_listen_ports %}\nListen {{ item }}{% endfor %}"
   notify: restart apache
 
 - name: Enable Apache mods (Debian).

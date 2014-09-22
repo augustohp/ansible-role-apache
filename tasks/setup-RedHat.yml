@@ -6,19 +6,15 @@
     enablerepo={{ apache_enablerepo }}
   with_items: apache_packages
 
-- name: Configure Apache (RedHat).
-  lineinfile: >
+- name: Configure Apache Vhost ports (RedHat).
+  replace: >
     dest={{ apache_server_root }}/conf/{{ apache_daemon }}.conf
-    regexp="{{ item.regexp }}"
-    line="{{ item.line }}"
-    state=present
-  with_items:
-  - {
-    regexp: "^Listen ",
-    line: "Listen {{ apache_listen_port }}"
-  }
-  - {
-    regexp: "^NameVirtualHost ",
-    line: "NameVirtualHost *:{{ apache_listen_port }}"
-  }
+    regexp="(\nNameVirtualHost [^\n]+)+"
+    replace="{% for item in apache_listen_ports %}\nNameVirtualHost *:{{ item }}{% endfor %}"
+
+- name: Configure Apache listening ports (RedHat).
+  replace: >
+    dest={{ apache_server_root }}/conf/{{ apache_daemon }}.conf
+    regexp="(\nListen [^\n]+)+"
+    replace="{% for item in apache_listen_ports %}\nListen {{ item }}{% endfor %}"
   notify: restart apache
