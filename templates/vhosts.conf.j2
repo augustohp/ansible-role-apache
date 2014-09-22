@@ -2,29 +2,26 @@
 DirectoryIndex index.php index.html
 
 {# Set up VirtualHosts - servername and documentroot are required. #}
-{% for vhost in apache_vhosts %}
 <VirtualHost *:{{ apache_listen_port }}>
-  ServerName {{ vhost.servername }}
-  DocumentRoot {{ vhost.documentroot }}
-{% if vhost.serveradmin is defined %}
-  ServerAdmin {{ vhost.serveradmin }}
+  ServerName {{ item.1.servername }}
+  DocumentRoot {{ item.1.documentroot }}
+{% if item.1.serveradmin is defined %}
+  ServerAdmin {{ item.1.serveradmin }}
 {% endif %}
-  <Directory "{{ vhost.documentroot }}">
+  <Directory "{{ item.1.documentroot }}">
     AllowOverride All
     Options -Indexes +FollowSymLinks
     Order allow,deny
     Allow from all
-  {% if vhost.directory_extra_parameters is defined %}
-  {% for param_name, param_value in vhost.directory_extra_parameters.items()|reverse %}
+  {% if item.1.directory_extra_parameters is defined %}
+  {% for param_name, param_value in item.1.directory_extra_parameters.items()|reverse %}
     {{ param_name }} {{ param_value }}
   {% endfor %}
   {% endif %}
   </Directory>
-{% if vhost.extra_parameters is defined %}
-{% for param_name, param_value in vhost.extra_parameters.items()|reverse %}
+{% if item.1.extra_parameters is defined %}
+{% for param_name, param_value in item.1.extra_parameters.items()|reverse %}
   {{ param_name }} {{ param_value }}
 {% endfor %}
 {% endif %}
 </VirtualHost>
-
-{% endfor %}
