@@ -6,6 +6,26 @@
     enablerepo={{ apache_enablerepo }}
   with_items: apache_packages
 
+- name: Install a2{en,dis}site equivalent scripts (RedHat).
+  copy: >
+    src={{ item }}
+    dest=/usr/sbin/{{ item }}
+    force=no
+    mode=0755
+  with_items:
+    - a2ensite
+    - a2dissite
+
+- name: Create directories for sites available/enabled (RedHat).
+  command: mkdir -p {{ apache_sites_available_path }} {{ apache_sites_enabled_path }}
+
+- name: Configure Apache sites-enabled includes (RedHat).
+  lineinfile: >
+    dest={{ apache_server_root }}/conf/{{ apache_daemon }}.conf
+    regexp="^Include sites-enabled"
+    line="Include sites-enabled/*"
+    state=present
+
 - name: Configure Apache (RedHat).
   lineinfile: >
     dest={{ apache_server_root }}/conf/{{ apache_daemon }}.conf

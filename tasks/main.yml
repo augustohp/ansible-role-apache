@@ -20,7 +20,7 @@
 - name: Add apache vhosts configuration.
   template: >
     src=vhosts.conf.j2
-    dest={{ apache_conf_path }}/{{ "%03d" | format(item.0) }}-{{ item.1.servername }}.conf
+    dest={{ apache_sites_available_path }}/{{ "%03d" | format(item.0) }}-{{ item.1.servername }}.conf
     owner=root group=root mode=644
   with_indexed_items: apache_vhosts
   notify: restart apache

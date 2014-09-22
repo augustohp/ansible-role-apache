@@ -1,0 +1,16 @@
+#!/bin/sh
+
+SE=/etc/httpd/sites-enabled
+
+if [ -L "${SE}/$1" ]; then
+    VHOST="$1"
+elif [ -L "${SE}/$1.conf" ]; then
+    VHOST="$1.conf"
+else
+    echo "Usage: $0 {site}" >&2
+    exit 1;
+fi
+
+(cd $SE && unlink ./${VHOST} )
+
+exit $?
