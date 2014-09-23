@@ -5,3 +5,6 @@ apache_sites_available_path: /etc/httpd/sites-available
 apache_sites_enabled_path: /etc/httpd/sites-enabled
 apache_vhosts:
   - {servername: "local.dev", documentroot: "/var/www/html"}
+  - {servername: "staging.dev", documentroot: "/var/www/html"}
+
+apache_enabled_vhosts: [ "local.dev" ]
