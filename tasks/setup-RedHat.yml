@@ -36,7 +36,7 @@
   }
   - {
     regexp: "^KeepAlive ",
-    line: "KeepAlive {{ 'On' if apache_keepalive else 'Off' }}"
+    line: "KeepAlive {% if apache_keepalive is string %}{{ apache_keepalive }}{% else %}{{ 'On' if apache_keepalive else 'Off' }}{% endif %}"
   }
   - {
     regexp: "^KeepAliveTimeout ",
