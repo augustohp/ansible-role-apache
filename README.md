@@ -32,6 +32,22 @@ Add a set of properties per virtualhost, including `servername` (required), `doc
 
 Note that this role doesn't configure SSL support out of the box; you would need to add in additional tasks to listen on port 443 and add your own VirtualHost directives for SSL. This may be improved in the future :)
 
+    apache_timeout: 300 # Timeout
+
+    apache_keepalive: true # KeepAlive
+
+    apache_keepalive_timeout: 15 # KeepAliveTimeout
+
+    apache_max_keepalive_reqs: 100 # MaxKeepAliveRequests
+
+    apache_server_tokens: OS # ServerTokens
+
+    apache_server_signature: true # ServerSignature
+
+    apache_trace_enable: false # TraceEnable
+
+Sets Apache core directives related to connectivity and security. See the [Apache core docs](http://httpd.apache.org/docs/current/mod/core.html) for more information on the directives in question.
+
     apache_mods_enabled:
       - rewrite.load
 
