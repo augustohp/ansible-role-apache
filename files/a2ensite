@@ -1,0 +1,17 @@
+#!/bin/sh
+
+SA=/etc/httpd/sites-available
+SE=/etc/httpd/sites-enabled
+
+if [ -f "${SA}/$1" ]; then
+    VHOST="$1"
+elif [ -f "${SA}/$1.conf" ]; then
+    VHOST="$1.conf"
+else
+    echo "Usage: $0 {site}" >&2
+    exit 1;
+fi
+
+(cd $SE && ln -s ../sites-available/$VHOST )
+
+exit $?
