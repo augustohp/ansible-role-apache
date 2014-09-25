@@ -1,6 +1,10 @@
 ---
 apache_daemon: httpd
 apache_server_root: /etc/httpd
-apache_conf_path: /etc/httpd/conf.d
+apache_sites_available_path: /etc/httpd/sites-available
+apache_sites_enabled_path: /etc/httpd/sites-enabled
 apache_vhosts:
-  - {servername: "local.dev", documentroot: "/var/www/html"}
+  - {servername: "local.dev", documentroot: "/var/www/html", ports: [80]}
+  - {servername: "staging.dev", documentroot: "/var/www/html"}
+
+apache_enabled_vhosts: [ "local.dev" ]

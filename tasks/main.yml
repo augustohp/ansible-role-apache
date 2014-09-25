@@ -9,9 +9,7 @@
   when: ansible_os_family == 'Debian'
 
 - name: Disable default apache host.
-  file: >
-    path="{{ apache_default_vhost }}"
-    state=absent
+  shell: rm -f {{ apache_default_vhost }}
   notify: restart apache
   when:
     - apache_disable_default_site
@@ -20,10 +18,16 @@
 - name: Add apache vhosts configuration.
   template: >
     src=vhosts.conf.j2
-    dest={{ apache_conf_path }}/vhosts.conf
+    dest={{ apache_sites_available_path }}/{{ "%03d" | format(item.0) }}-{{ item.1.servername }}.conf
     owner=root group=root mode=644
-  notify: restart apache
+  with_indexed_items: apache_vhosts
   when: apache_create_vhosts
+
+- name: Enable apache vhosts.
+  command: a2ensite {{ "%03d" | format(item.0) }}-{{ item.1.servername }}.conf
+  with_indexed_items: apache_vhosts
+  notify: restart apache
+  when: apache_create_vhosts and item.1.servername in apache_enabled_vhosts
 
 - name: Ensure Apache is started and enabled on boot.
   service: >
