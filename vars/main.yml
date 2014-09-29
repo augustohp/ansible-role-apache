@@ -1,6 +1,6 @@
 ---
 apache_enablerepo: ""
 
-apache_listen_port: 80
+apache_listen_ports: [ 80 ]
 
 apache_create_vhosts: true

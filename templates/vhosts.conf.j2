@@ -2,7 +2,8 @@
 DirectoryIndex index.php index.html
 
 {# Set up VirtualHosts - servername and documentroot are required. #}
-<VirtualHost *:{{ apache_listen_port }}>
+{% for vhost_port in (item.1.ports if item.1.ports is defined else apache_listen_ports) %}
+<VirtualHost *:{{ vhost_port }}>
   ServerName {{ item.1.servername }}
   DocumentRoot {{ item.1.documentroot }}
 {% if item.1.serveradmin is defined %}
@@ -25,3 +26,4 @@ DirectoryIndex index.php index.html
 {% endfor %}
 {% endif %}
 </VirtualHost>
+{% endfor %}

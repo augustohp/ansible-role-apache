@@ -16,9 +16,9 @@ Available variables are listed below, along with default values (see `defaults/m
 
 The repository to use when installing Apache (only used on RHEL/CentOS systems). If you'd like later versions of Apache than are available in the OS's core repositories, use a repository like EPEL (which can be installed with the `geerlingguy.repo-epel` role).
 
-    apache_listen_port: 80
+    apache_listen_ports: [ 80 ]
 
-The port on which apache should be listening. Useful if you have another service (like a reverse proxy) listening on port 80.
+The ports on which apache should be listening (as a list). Useful if you have another service (like a reverse proxy) listening on port 80, or apply ssl at a load balancer on a supplemental port.
 
     apache_create_vhosts: true
 
@@ -51,7 +51,7 @@ None.
 
 *Inside `vars/main.yml`*:
 
-    apache_listen_port: 8080
+    apache_listen_ports: [ 80, 8080 ]
     apache_vhosts:
       - {servername: "example.com", documentroot: "/var/www/vhosts/example_com"}
 
