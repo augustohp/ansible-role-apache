@@ -20,6 +20,56 @@
     replace="{% for item in apache_listen_ports %}\nListen {{ item }}{% endfor %}"
   notify: restart apache
 
+- name: Configure apache timeouts and keepalives (Debian).
+  lineinfile: >
+    dest="{{ apache_server_root }}/{{ apache_daemon }}.conf"
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    state=present
+  with_items:
+  - {
+    regexp: "^Timeout ",
+    line: "Timeout {{ apache_timeout }}"
+  }
+  - {
+    regexp: "^KeepAlive ",
+    line: "KeepAlive {% if apache_keepalive is string %}{{ apache_keepalive }}{% else %}{{ 'On' if apache_keepalive else 'Off' }}{% endif %}"
+  }
+  - {
+    regexp: "^KeepAliveTimeout ",
+    line: "KeepAliveTimeout {{ apache_keepalive_timeout }}"
+  }
+  - {
+    regexp: "^MaxKeepAliveRequests ",
+    line: "MaxKeepAliveRequests {{ apache_max_keepalive_reqs }}"
+  }
+  notify: restart apache
+
+- name: Determine apache security config (Debian).
+  shell: ls -1 /etc/apache2/conf*/security* | head -1
+  register: apache_security_conf
+
+- name: Configure apache security (Debian).
+  lineinfile: >
+    dest="{{ apache_security_conf.stdout }}"
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    state=present
+  with_items:
+  - {
+    regexp: "^ServerTokens ",
+    line: "ServerTokens {{ apache_server_tokens }}"
+  }
+  - {
+    regexp: "^ServerSignature ",
+    line: "ServerSignature {% if apache_server_signature is string %}{{ apache_server_signature }}{% else %}{{ 'On' if apache_server_signature else 'Off' }}{% endif %}"
+  }
+  - {
+    regexp: "^TraceEnable ",
+    line: "TraceEnable {% if apache_trace_enable is string %}{{ apache_trace_enable }}{% else %}{{ 'On' if apache_trace_enable else 'Off' }}{% endif %}"
+  }
+  notify: restart apache
+
 - name: Enable Apache mods (Debian).
   file: >
     src={{ apache_server_root }}/mods-available/{{ item }}

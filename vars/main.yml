@@ -4,3 +4,17 @@ apache_enablerepo: ""
 apache_listen_ports: [ 80 ]
 
 apache_create_vhosts: true
+
+apache_timeout: 300
+
+apache_keepalive: true
+
+apache_keepalive_timeout: 15
+
+apache_max_keepalive_reqs: 100
+
+apache_server_tokens: OS
+
+apache_server_signature: true
+
+apache_trace_enable: false
